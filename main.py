@@ -2,6 +2,11 @@
 # import os module to check file
 import os
 
+# import the Task Class
+from task import Task
+# import utility functions
+from todolist import add_task, complete_task, delete_task, list_tasks
+
 # set up an empty task list
 task_list = []
 
@@ -24,7 +29,61 @@ while True:
     user_upper = user_choice.upper()
 
     if user_upper in menu_options:
-        if user_upper == 'Q':
+        # ADD TASK
+        if user_upper == 'A':
+            # remove the trailing spaces - this is to make sure if they do empty input it can be handled properly instead of having to include other logic
+            title = input("Enter a task title: ").strip()
+
+            # if the title is "" then make up stock as title
+            if title == "":
+                title = "Task"
+
+            due_date = input("Enter due date (YYYY-MM-DD, or press Enter to skip): ").strip()
+
+            if due_date == "":
+                # this is the default anyways 
+                due_date = None
+
+            # now use the add utility function with the input
+            add_task(task_list, title, due_date)
+
+        # PICK AN INDEX - COMPLETE A TASK 
+        elif user_upper == 'C':
+            # use a try except in case it's not an integer or doesn't exist in the list
+            try:
+                # do -1 bc list i 0-indexed, it'll be stored by number
+                index = int(input("Enter a task number to complete: ")) - 1
+
+                # because of python, a negative will just loop from the back so raise an error if the user puts in 0 - the list should start at 1 anyways
+                if index < 0:
+                    raise IndexError
+
+                # the function will catch the error when it tries to access the index and it'll be flagged as a value error here
+                complete_task(task_list, index)
+
+            except (ValueError, IndexError):
+                print("Not a valid task number.")
+
+        # PICK AN INDEX - DELETE A TASK
+        elif user_upper == 'D':
+            try:
+                index = int(input("Enter a task number to delete: ")) - 1
+
+                if index < 0:
+                    raise IndexError
+
+                # will catch false index when function attempts to use it
+                delete_task(task_list, index)
+
+            except (ValueError, IndexError):
+                print("Not a valid task number.")
+
+        # VIEW ALL TASKS
+        elif user_upper == 'L':
+            list_tasks(task_list)
+
+        elif user_upper == 'Q':
+            # TO DO: eventually overwrite the data into the .txt file to save it before quitting
             print("Exiting todo list!")
             # break to quit the loop
             break
