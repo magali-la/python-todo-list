@@ -1,0 +1,3 @@
+groceries|2026-08-07|True
+reading|2026-08-20|False
+painting|None|False
