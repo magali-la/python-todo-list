@@ -9,6 +9,7 @@ Case normlization used to accept upper or lowercase valid menu options. Set is u
 
 ### Error Handling
 Users are gracefully notified when menu selection does not match the options (A, C, D, L, Q). A continuous loop will restore the menu rather than stop the script
+
 ![alt text](/assets/image.png)
 
 ## Add a Task
