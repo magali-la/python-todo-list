@@ -32,7 +32,10 @@ def add_task(task_list, title, due_date=None):
 
 # complete a task - task at index marked completed - error handling if index doesn't exist
 def complete_task(task_list, index):
-    print("Completing task")
+    # update the field for that task in place - if it fails, main.py will catch the access issue and print the message
+    task_list[index].completed = True
+
+    print(f"Completing task #{index + 1}. {task_list[index].title}")
 
 
 # delete a task - remove at index - error handling
@@ -54,7 +57,16 @@ def list_tasks(task_list):
         print("No tasks in the list")
         # return needed to stop this loop
         return
+
+    # Overdue flag, only do this if there's tasks - add label
+    todays_date = datetime.date.today()
+
     # otherwise use enumerate method to number the tasks in the array as they are printed
     for i, task in enumerate(task_list, start=1):
-        # the task has already been formatted with the string method, just input it
-        print(f"{i}. {task}")
+
+        # conditional flag on the printed list in the console - make sure it's only doing this if it hasn't been completed
+        if task.completed is False and task.due_date is not None and task.due_date < todays_date:
+            print(f"{i}. {task} (OVERDUE!)")
+        else:
+            # the task has already been formatted with the string method, just input it
+            print(f"{i}. {task}")
