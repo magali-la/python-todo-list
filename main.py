@@ -1,6 +1,7 @@
 # this is the user interface for the to do list - needs to be a while loop so it continues until the user selects to quit
 # import os module to check file
 import os
+import datetime
 
 # import the Task Class
 from task import Task
@@ -12,9 +13,40 @@ task_list = []
 
 # if the data exists, then fill the task_list array line by line
 if os.path.isfile('tasks.txt'):
-    # loop through the file to extract the data
-    # todo - actually get the file and perform operations to import it into task list
-    print("You have saved tasks!")
+
+
+    # use try except for file ops
+    try: 
+        # read the file - use read mode
+        with open('tasks.txt', 'r') as file:
+            # loop through the file to extract the data
+            for line in file:
+                # use destructuring logic to pull each part by splitting by the '|' character, strip removes the \n that was used to make the line keeping it clean before splitting
+                title, date_string, completed_string = line.strip().split('|')
+
+                # now need to use a conditional for the date because the "None" if no due date is a string, needs to actually be None so it can be added to the task object correctly
+                if date_string == "None":
+                    parsed_date = None
+                else:
+                    # need it in the right format for the Task object - replicate logic
+                    parsed_date = datetime.datetime.strptime(date_string, "%Y-%m-%d").date()
+
+                # need to use conditional for the boolean to put an actual boolean and not True or False as strings for completed
+                if completed_string == "True":
+                    parsed_completed = True
+                else: 
+                    parsed_completed = False
+
+                # create the task wth the info
+                loaded_task = Task(title, parsed_date, parsed_completed)
+
+                # add it to the array
+                task_list.append(loaded_task)    
+
+            # the file exists, notify user successfully saved tasks
+            print("You have saved tasks! Loading...")
+    except OSError:
+        print("Error loading saved tasks.")
 
 # the else is implied, we are starting with an empty list
 
@@ -84,7 +116,18 @@ while True:
 
         elif user_upper == 'Q':
             # TO DO: eventually overwrite the data into the .txt file to save it before quitting
-            print("Exiting todo list!")
+            print("Saving your todo.\n Exiting todo list!")
+            try:
+                # open in write mode
+                with open('tasks.txt', 'w') as file:
+                    # loop through and add it to file per task object
+                    for task in task_list:
+                        # best to separate the data by some character so that loading is successful splitting
+                        file.write(f"{task.title}|{task.due_date}|{task.completed}\n")              
+            except OSError:
+                print(f"Issue saving file. Returning to menu")
+                # continue so it doesn't quit without saving anything
+                continue
             # break to quit the loop
             break
     else:
