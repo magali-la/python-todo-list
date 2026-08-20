@@ -33,9 +33,16 @@ def add_task(task_list, title, due_date=None):
 # complete a task - task at index marked completed - error handling if index doesn't exist
 def complete_task(task_list, index):
     print("Completing task")
+
+
 # delete a task - remove at index - error handling
 def delete_task(task_list, index):
-    print("Deleting task")
+    # the error handling in main.py handles it o if it has an error, it'll use main.py message
+    # use index and try to pop it - store it to use the title in the string
+    deleted_task = task_list.pop(index)
+
+    # the task is deleted, but notify user - the index should be correct if it gets to this point
+    print(f"Deleting task #{index + 1}. {deleted_task.title}")
 
 # show all tasks - formatted list with all info - index, status, title, due date
 # needs to also show if due date is after today's date, then say how many days in between
